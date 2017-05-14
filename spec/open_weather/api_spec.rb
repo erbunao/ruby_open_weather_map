@@ -1,10 +1,18 @@
 describe 'Open weather Current API' do
   context '.city' do
-    it 'return current weather for cochi' do
+    it 'return current weather given the city and country code' do
       response = VCR.use_cassette('api/current_city_valid') do
         OpenWeather::Current.city('Cochin, In')
       end
       response['cod'].should eq(200)
+    end
+
+    it 'return current weather given only the city' do
+      response = VCR.use_cassette('api/current_city_only_valid') do
+        OpenWeather::Current.city('Paris')
+      end
+      response['cod'].should eq(200)
+      response['name'].should eq('Paris')
     end
 
     it 'returns error if the city is invalid' do

@@ -30,12 +30,25 @@ module OpenWeather
       options.keys.each { |k| options.delete(k) unless valid_options.include?(k) }
 
       if options[:city] || options[:country]
-        options[:q] = "#{options[:country]},#{options[:city]}"
+        options[:q] = query(options)
         options.delete(:city)
         options.delete(:country)
       end
 
       options
+    end
+
+    def query(options)
+      query ||= begin
+        [].tap do |fields|
+          if options[:country] && !options[:country].empty?
+            fields << options[:country]
+          end
+          if options[:city] && !options[:city].empty?
+            fields << options[:city]
+          end
+        end.join(',')
+      end
     end
 
     def parse_response(response)
